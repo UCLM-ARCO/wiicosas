@@ -39,8 +39,11 @@ class WiiMando(Observable):
     def msg_cb(self, msgs):
         for t,args in [x for x in msgs if x[0] == cwiid.MESG_ACC]:
             self.notify(*args)
-
-
+            
+    def close(self):
+        self.wm.disable(cwiid.FLAG_MESG_IFC)
+        self.wm.close()
+        
 class Debug(object):
     def update(self, x, y, z):
         print "x:%s, y:%s, z:%s" % (x, y, z)
@@ -52,11 +55,13 @@ mote.attach(Debug())
 screen = pygame.display.set_mode(SIZE)
 
 while 1:
-    time.sleep(0.05)
+    time.sleep(0.02)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            break
-
+            mote.close()
+            sys.exit(1)
+            
     screen.fill(FONDO)   
     pygame.draw.rect(screen, (255,0,0), (mote.x, mote.y, 50, 60), 2)
     pygame.display.flip()     
+
