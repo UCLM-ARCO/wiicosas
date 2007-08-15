@@ -24,13 +24,13 @@ class Observable(object):
 class WiiMando(Observable):
     def __init__(self):
         Observable.__init__(self)
-#        raw_input("Press 1+2 and enter...")
+        raw_input("Press 1+2 and enter...")
         self.x = self.y = 0
         self.wm = None
-#        self.wm = cwiid.Wiimote()
-#        self.wm.mesg_callback = self.msg_cb
-#        self.wm.rpt_mode=cwiid.RPT_ACC
-#        self.wm.enable(cwiid.FLAG_MESG_IFC)
+        self.wm = cwiid.Wiimote()
+        self.wm.mesg_callback = self.msg_cb
+        self.wm.rpt_mode=cwiid.RPT_ACC
+        self.wm.enable(cwiid.FLAG_MESG_IFC)
         self.attach(self)
 
     def update(self, x, y, z):
@@ -56,20 +56,22 @@ mote = WiiMando()
 mote.attach(Debug())
 
 screen = pygame.display.set_mode(SIZE)
-capa = pygame.Surface((50,60))
+#capa = pygame.Surface((50,60))
 clock = pygame.time.Clock()
-done = False
+end = False
 
-while not done:
+while not end:
     clock.tick(RATE)
+
+    screen.fill(FONDO)
+    pygame.draw.rect(screen, (255,0,0), (mote.x, mote.y, 50, 60), 2)
+    #screen.blit(capa,(0,0))
+    pygame.display.flip()     
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             mote.close()
-            done = True
+            end = True
 
-    pygame.draw.rect(capa, (255,0,0), (mote.x, mote.y, 50, 60), 2)
 
-    screen.fill(FONDO)
-    screen.blit(capa,(0,0))
-    pygame.display.flip()     
 
